@@ -58,10 +58,24 @@ class RedisDatabase:
         try:
             client = self.get_instance()
             data = client.hgetall(f"Episode {number}")
+            if len(data) == 0:
+                return f"Error. Episode {number} does not exist."
             return data
         except redis.RedisError as error:
             return f"Error during select operation: {error}"
 
+    def update_episode(self, number, **kwargs):
+        try:
+            if kwargs:
+                client = self.get_instance()
+                client.hset(f"Episode {number}", mapping=kwargs)
+                return f"Episode {number} succesfully updated with {kwargs}"
+            else:
+                return f"No fields have been modified."
+        except redis.RedisError as error:
+            return f"Error during update operation: {error}"
+                
+    
     def delete_episode(self, number):
         try:
             client = self.get_instance()

@@ -28,8 +28,10 @@ Status = RedisDatabase.Status
 
 #print(redisrepo.insert_episode(69, "The Test", 1, 10))
 print(redisrepo.select_all_episodes())
-#print(redisrepo.select_episode(1))
+print(redisrepo.select_episode(69))
 #print(redisrepo.delete_episode(69))
+#print(redisrepo.update_episode(69, season=15))
+#print(f"\n NEW: {redisrepo.select_episode(69)}")
 
 # import redis
 
