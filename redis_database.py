@@ -1,5 +1,6 @@
 import redis
 from enum import Enum
+import time
 
 class RedisDatabase:
     _instance = None
@@ -85,3 +86,33 @@ class RedisDatabase:
             return f"Error. Episode {number} not found."
         except redis.RedisError as error:
             return f"Error during delete operation: {error}"
+
+    def rent_episode(self, number):
+        try:
+            client = self.get_instance()
+            client.setex(f"Episode {number}:expiry", 10, "True")
+            return f"Episode {number} rented successfully. You have 4 (four) minutes to confirm transaction."
+        except redis.RedisError as error:
+            return f"Error during rent operation: {error}"
+    
+    def verify_payment(self, episode_number):
+        try:
+            client = self.get_instance()
+            if not client.exists(f"Episode {episode_number}:expiry"):
+                return f"Episode {episode_number} has not been rented."
+            self.update_episode(episode_number, status=str(self.Status.RENTED))
+            print("Payment confirmed! The episode is yours for 24 hours.")
+            time.sleep(20)
+            self.update_episode(episode_number, status=str(self.Status.AVAILABLE))
+            return("24 hours have passed (in Mercury, probably). The episode is now available for rent.")
+        except redis.RedisError as error:
+            return f"Error during confirm payment operation: {error}"
+
+    #reservar:
+    #creamos una key temporal
+    #r.setex(f'chapter:{capitulo_id}:expiry', 240, 'true')
+    
+    #despues tenemos una funcion de verificar payment:
+    #if not .exists(key):
+    #la clave expira, se puede volver al estado "disponible" (en mi caso creo que no es necesario)
+    #else: avisar que sigue reservado
