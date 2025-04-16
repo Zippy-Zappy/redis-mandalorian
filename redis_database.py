@@ -49,8 +49,14 @@ class RedisDatabase:
             episodes = client.smembers("episodes")
             
             for episode in episodes:
-                data = self.select_episode(episode)
-                episode_list.append(f"Episode {episode} - {data["name"]}")
+                data = client.hgetall(f"Episode {episode}")
+                episode_list.append({
+                    "number": episode,
+                    "name": data.get("name", "Desconocido"),
+                    "season": data.get("season", "-"),
+                    "price": data.get("price", "0"),
+                    "status": data.get("status", str(self.Status.AVAILABLE))
+                })
             return episode_list
         except redis.RedisError as error:
             return f"Error during select operation: {error}"
@@ -107,12 +113,3 @@ class RedisDatabase:
             return("24 hours have passed (in Mercury, probably). The episode is now available for rent.")
         except redis.RedisError as error:
             return f"Error during confirm payment operation: {error}"
-
-    #reservar:
-    #creamos una key temporal
-    #r.setex(f'chapter:{capitulo_id}:expiry', 240, 'true')
-    
-    #despues tenemos una funcion de verificar payment:
-    #if not .exists(key):
-    #la clave expira, se puede volver al estado "disponible" (en mi caso creo que no es necesario)
-    #else: avisar que sigue reservado

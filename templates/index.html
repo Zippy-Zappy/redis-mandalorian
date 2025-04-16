@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Episodios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Gestor de Episodios</h1>
+
+    <form id="episodeForm">
+        <input type="text" id="number" placeholder="Número" required>
+        <input type="text" id="name" placeholder="Nombre" required>
+        <input type="text" id="season" placeholder="Temporada" required>
+        <input type="text" id="price" placeholder="Precio" required>
+        <button type="submit">Agregar</button>
+    </form>
+    <!-- Formulario para actualizar episodios -->
+    <div id="updateForm" style="display:none;">
+        <h2>Actualizar Episodio</h2>
+        <form id="updateEpisodeForm">
+            <input type="hidden" id="updateEpisodeId">
+            <input type="text" id="updateName" placeholder="Nombre" required>
+            <input type="text" id="updateSeason" placeholder="Temporada" required>
+            <input type="text" id="updatePrice" placeholder="Precio" required>
+            <button type="submit">Actualizar</button>
+        </form>
+    </div>
+
+    <h2>📃 Lista de Episodios</h2>
+    <ul id="episodeList"></ul>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
